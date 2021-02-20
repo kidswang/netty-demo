@@ -1,5 +1,6 @@
 package com.waiwaiwai.demo.mynio.simplenio;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -38,7 +39,7 @@ public class NioServer {
         while (true) {
             // 如果没有连接
             if (selector.select(1000) == 0) {
-                System.out.println("等待客户端连接");
+//                System.out.println("等待客户端连接");
                 continue;
             }
 
@@ -57,11 +58,21 @@ public class NioServer {
                     // 将 socketChannel 注册到 selector 中,并分配一个 bytebuffer
                     socketChannel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocate(1024));
                 }
+
                 if (selectionKey.isReadable()) {
-                    SocketChannel channel = (SocketChannel) selectionKey.channel();
-                    ByteBuffer byteBuffer = (ByteBuffer) selectionKey.attachment();
-                    channel.read(byteBuffer);
-                    System.out.println(new String(byteBuffer.array()));
+                        SocketChannel channel = (SocketChannel) selectionKey.channel();
+                    try {
+                        ByteBuffer byteBuffer = (ByteBuffer) selectionKey.attachment();
+                        channel.read(byteBuffer);
+                        System.out.println(new String(byteBuffer.array()));
+                    } catch (IOException e) {
+                        System.out.println("xia xian le ");
+                        // 去掉该 selectionKey
+                        selectionKey.cancel();
+                        // 关闭该通道
+                        channel.close();
+//                        e.printStackTrace();
+                    }
                 }
                 // 防止重复  将 key 从当前的 selectionKeys中移除掉
                 iterator.remove();
@@ -92,8 +103,6 @@ public class NioServer {
 //            });
 
         }
-
-
     }
 
 }

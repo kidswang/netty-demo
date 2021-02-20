@@ -8,6 +8,7 @@ public class NioClient {
 
 
     public static void main(String[] args) throws Exception {
+
         SocketChannel channel = SocketChannel.open();
 
         channel.configureBlocking(false);
@@ -30,11 +31,10 @@ public class NioClient {
             if (count == 10) break;
             count += 1;
             System.out.println(count);
+            byteBuffer.clear();
         }
         // 阻塞在这里
         System.in.read();
-
-
     }
 
 }
