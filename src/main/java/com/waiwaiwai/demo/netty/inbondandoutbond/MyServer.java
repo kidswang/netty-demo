@@ -22,6 +22,7 @@ public class MyServer {
                     .childHandler(null);
             ChannelFuture cf = bootstrap.bind(new InetSocketAddress(6666)).sync();
             cf.channel().closeFuture().sync();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
