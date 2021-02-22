@@ -35,8 +35,20 @@ public class NettyServer {
                     });
             // 绑定一个端口并且同步 生成一个 ChannelFuture 对象
             ChannelFuture cf = bootstrap.bind(6668).sync();
+
+            cf.addListener(future -> {
+               if (future.isSuccess()) {
+                   System.out.println("done");
+               } else {
+                   System.out.println("none");
+               }
+            });
+
+
+
             // 对通道的关闭事件进行监听
             cf.channel().closeFuture().sync();
+//            cf.isDone()
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
