@@ -19,7 +19,7 @@ public class MyServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(null);
+                    .childHandler(new MyServerInitializer());
             ChannelFuture cf = bootstrap.bind(new InetSocketAddress(6666)).sync();
             cf.channel().closeFuture().sync();
 
