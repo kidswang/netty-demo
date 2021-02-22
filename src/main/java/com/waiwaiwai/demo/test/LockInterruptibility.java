@@ -72,41 +72,44 @@ public class LockInterruptibility {
         t4.join();
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        LockInterruptibility test = new LockInterruptibility();
-        Thread t1 = new Thread(test::nonStatic);
-        Thread t2 = new Thread(LockInterruptibility::oneStatic);
-
-        t1.start();
-        t2.start();
-
-        t1.join();
-        t2.join();
-
+    public static void main(String[] args) {
 //        LockInterruptibility test = new LockInterruptibility();
-//        MyThread thread1 = new MyThread(test);
-//        MyThread thread2 = new MyThread(test);
-//        thread1.start();
-//        thread2.start();
+//        Thread t1 = new Thread(test::nonStatic);
+//        Thread t2 = new Thread(LockInterruptibility::oneStatic);
 //
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        thread2.interrupt();
+//        t1.start();
+//        t2.start();
+//
+//        t1.join();
+//        t2.join();
+
+        LockInterruptibility test = new LockInterruptibility();
+        MyThread thread1 = new MyThread(test);
+        MyThread thread2 = new MyThread(test);
+        thread1.start();
+        thread2.start();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        thread1.interrupt();
     }
 
     public void insert(Thread thread) throws InterruptedException {
         lock.lockInterruptibly();   //注意，如果需要正确中断等待锁的线程，必须将获取锁放在外面，然后将InterruptedException抛出
+//        lock.lock();
         try {
             System.out.println(thread.getName() + "得到了锁");
             long startTime = System.currentTimeMillis();
             for (; ; ) {
-                if (System.currentTimeMillis() - startTime >= 10000)
+                if (System.currentTimeMillis() - startTime >= 100000)
                     break;
                 //插入数据
+//                System.out.println(Thread.currentThread().isInterrupted());
             }
+
         } finally {
             System.out.println(Thread.currentThread().getName() + "执行finally");
             lock.unlock();

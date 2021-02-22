@@ -4,7 +4,6 @@ import com.waiwaiwai.demo.domain.Account;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 破坏循环并等待条件
@@ -16,14 +15,19 @@ public class BreakOccupyAndWait {
 
     // 判断是否已经被使用了
     private synchronized boolean apply(Object from, Object to) {
-        if (als.contains(from) || als.contains(to)) {
-            return false;
+        while (als.contains(from) || als.contains(to)) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+//            return false;
         }
-        try {
-            this.wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.wait();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         als.add(from);
         als.add(to);
         return true;
@@ -33,11 +37,12 @@ public class BreakOccupyAndWait {
     private synchronized void remove(Object from, Object to) {
         als.remove(from);
         als.remove(to);
+        this.notifyAll();
     }
 
     // 转账
     public void transfer(Account from, Account target, int amt) {
-        while (!apply(from, target)) {
+        if (!apply(from, target)) {
             try {
                 synchronized (from) {
                     synchronized (target) {

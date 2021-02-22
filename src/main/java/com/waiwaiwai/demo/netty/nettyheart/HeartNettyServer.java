@@ -1,18 +1,20 @@
-package com.waiwaiwai.demo.netty.nettysimple;
+package com.waiwaiwai.demo.netty.nettyheart;
 
+import com.waiwaiwai.demo.netty.nettysimple.NettyServer;
+import com.waiwaiwai.demo.netty.nettysimple.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
-/**
- * netty 服务器端
- */
-public class NettyServer {
+import java.util.concurrent.TimeUnit;
+
+public class HeartNettyServer {
+
 
     public void serverStart() {
         // 创建两个线程组
@@ -24,12 +26,20 @@ public class NettyServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workGroup)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 128) // 设置队列得到连接的个数
-                    .childOption(ChannelOption.SO_KEEPALIVE, true) // 设置状态为保持连接
+                    .handler(new LoggingHandler(LogLevel.INFO))
+//                    .option(ChannelOption.SO_BACKLOG, 128) // 设置队列得到连接的个数
+//                    .childOption(ChannelOption.SO_KEEPALIVE, true) // 设置状态为保持连接
                     .childHandler(new ChannelInitializer<SocketChannel>() { // 初始化管道
                         @Override
                         protected void initChannel(SocketChannel ch) { // 添加处理器
-                            ch.pipeline().addLast(new NettyServerHandler());
+//                            ch.pipeline().addLast(new NettyServerHandler());
+                            ChannelPipeline pipeline = ch.pipeline();
+                            // idle触发后,就会传递给管道的下一个 Handler 去处理 通过条用下一个 Handler 的 userEventTrigger 在该方法中处理空闲
+                            pipeline.addLast(new IdleStateHandler(0, 20, 50, TimeUnit.SECONDS));
+                            // 添加心跳检测处理
+                            pipeline.addLast(new NettyHeartHandler());
+                            // 添加重连
+
                         }
                     });
 
@@ -46,7 +56,8 @@ public class NettyServer {
     }
 
     public static void main(String[] args) {
-        new NettyServer().serverStart();
+        new HeartNettyServer().serverStart();
     }
+
 
 }
