@@ -54,12 +54,16 @@
             <artifactId>junit</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.6.1</version>
+        </dependency>
 
     </dependencies>
 
-
     <repositories>
-
         <repository>
             <id>spring</id>
             <url>https://maven.aliyun.com/repository/spring</url>
