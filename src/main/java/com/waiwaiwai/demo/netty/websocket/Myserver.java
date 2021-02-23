@@ -50,8 +50,9 @@ public class Myserver {
                             // websocketframe
                             // WebSocketServerProtocolHandler 的核心功能是将 http 协议升级为 websocket 协议 保持长连接
                             pipeline.addLast(new WebSocketServerProtocolHandler("/hello"));
+                            pipeline.addLast(new WebSocketDecoder());
                             // 自定义一个 Handler 处理业务 procedure
-                            // http + json -》 大部分都转成了使用（tcp + protoBuf）方式
+                            // http + json -》 大部分都转成了使用（tcp + pro   toBuf）方式
                             pipeline.addLast(new MyTextWebSocketFrameHandler());
                         }
                     });

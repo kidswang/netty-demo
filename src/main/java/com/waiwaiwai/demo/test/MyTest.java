@@ -4,13 +4,28 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.util.Properties;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
+import java.util.function.BiConsumer;
 
 public class MyTest {
 
 
     private static final ExecutorService es = Executors.newSingleThreadExecutor();
+
+
+    @Test
+    public void test5() {
+        // 获取所有的系统配置信息
+        Properties ssl = System.getProperties();
+        String str = ssl.toString();
+        String[] split = str.split(",");
+        for (String s : split) {
+            System.out.println(s);
+        }
+    }
+
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         Future<String> future1 = es.submit(() -> {

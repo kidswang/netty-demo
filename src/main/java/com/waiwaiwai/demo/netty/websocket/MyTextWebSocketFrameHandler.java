@@ -1,5 +1,7 @@
 package com.waiwaiwai.demo.netty.websocket;
 
+import com.alibaba.fastjson.JSONObject;
+import com.waiwaiwai.demo.domain.Account;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -13,10 +15,21 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 public class MyTextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> { // 规定了是以 TextWebSocketFrame 类型的数据传输,使用别的类型收不到
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
-        System.out.println("f服务器拿到数据" + textWebSocketFrame.text());
+        String text = textWebSocketFrame.text();
+        System.out.println(text);
+        if ("ping".equals(text)) {
+            System.out.println("这是一个心跳");
+            channelHandlerContext.writeAndFlush(new TextWebSocketFrame(text));
+        } else {
+            Account account = JSONObject.parseObject(text, Account.class);
+            System.out.println(account);
+            System.out.println("服务器拿到数据" + textWebSocketFrame.text());
+            System.out.println(textWebSocketFrame.content());
+//        System.out.println("f服务器拿到数据" + textWebSocketFrame);
+            // 回复消息
+            channelHandlerContext.channel().writeAndFlush(new TextWebSocketFrame("我收到消息了"));
+        }
 
-        // 回复消息
-        channelHandlerContext.channel().writeAndFlush(new TextWebSocketFrame("我收到消息了"));
 
     }
 
@@ -31,6 +44,7 @@ public class MyTextWebSocketFrameHandler extends SimpleChannelInboundHandler<Tex
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         System.out.println("handlerRemoved 被调用了" + ctx.channel().id().asLongText());
+        ctx.close();
     }
 
     @Override
