@@ -1,15 +1,12 @@
-package com.waiwaiwai.demo.netty.inbondandoutbond;
+package com.waiwaiwai.demo.netty.tcp;
 
-import com.waiwaiwai.demo.netty.simplehttp.TestChannelInit;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.net.InetSocketAddress;
-
-public class MyServer {
+public class Myserver {
 
     public static void main(String[] args) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -21,7 +18,8 @@ public class MyServer {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new MyServerInitializer());
 
-            ChannelFuture cf = bootstrap.bind(new InetSocketAddress(6666)).sync();
+            ChannelFuture cf = bootstrap.bind(6668).sync();
+            // 监听通道关闭
             cf.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
@@ -29,6 +27,7 @@ public class MyServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+
     }
 
 }
