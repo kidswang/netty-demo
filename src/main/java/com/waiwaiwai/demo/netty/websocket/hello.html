@@ -11,14 +11,13 @@
     // 判断当前浏览器时否支持websocket编程
     if (window.WebSocket) {
         // go on
-        socket = new WebSocket("ws://localhost:8080/hello")
+        socket = new WebSocket("ws://localhost:8080/hello?id=fdsfsfsdf");
         // 收到服务器传回的消息
         socket.onmessage = function (ev) {
             console.log("dian ji le")
             heartCheck.reset().start();
             var rt = document.getElementById("responseText");
             rt.value = rt.value + "\n" + ev.data
-
         }
 
         socket.onopen = function (ev) {

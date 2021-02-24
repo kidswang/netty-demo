@@ -4,6 +4,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
@@ -158,5 +159,15 @@ public class MyTest {
         System.out.println(log);
     }
 
+
+    @Test
+    public void testHashMap() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        for (int i = 0; i < 30; i++) {
+            hashMap.put("Str" + i, "sss" + i);
+        }
+
+
+    }
 
 }

@@ -18,8 +18,12 @@ public class ThreadInterrupt {
 //                e.printStackTrace();
 //            }
             int j = 0;
-            System.out.println(System.currentTimeMillis());
-//            while ( )
+            long currentTime = System.currentTimeMillis();
+
+            System.out.println();
+            while ((System.currentTimeMillis() - currentTime) < 5000) {
+//                System.out.println();
+            }
             System.out.println(j);
             System.out.println(" wo mei you bei zhong duan");
         });

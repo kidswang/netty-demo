@@ -14,15 +14,22 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+
+import static io.netty.handler.codec.http.HttpHeaders.Names.WEBSOCKET_PROTOCOL;
 
 /**
  * @Author: wangzhenglei
  * @DateTime: 2021/2/22 15:37
  * @Description: netty 长连接
  */
+@Component
 public class Myserver {
 
-    public static void main(String[] args) {
+    public void start() {
         // 创建两个线程组
         // bossGroup 负责处理链接请求    workGroup 负责处理读写请求
         EventLoopGroup bossGroup = null;
@@ -49,11 +56,15 @@ public class Myserver {
                             // 对应 websocket 它的数据是以帧的方式传输的
                             // websocketframe
                             // WebSocketServerProtocolHandler 的核心功能是将 http 协议升级为 websocket 协议 保持长连接
-                            pipeline.addLast(new WebSocketServerProtocolHandler("/hello"));
-                            pipeline.addLast(new WebSocketDecoder());
+//                            pipeline.addLast(new WebSocketDecoder());
                             // 自定义一个 Handler 处理业务 procedure
                             // http + json -》 大部分都转成了使用（tcp + pro   toBuf）方式
+//                            pipeline.addLast(new IdleStateHandler(6, 6, 0));
+//                            pipeline.addLast(new MyWebSocketHandler());
                             pipeline.addLast(new MyTextWebSocketFrameHandler());
+                            // extension
+                            pipeline.addLast(new WebSocketServerProtocolHandler("/hello", WEBSOCKET_PROTOCOL, true, 65536 * 10));
+//                            pipeline.addLast(new MyHeartHandler());
                         }
                     });
             ChannelFuture cf = bootstrap.bind(8080).sync();
@@ -68,4 +79,10 @@ public class Myserver {
                 workGroup.shutdownGracefully();
         }
     }
+
+    @PostConstruct
+    public void init() {
+        new Thread(this::start).start();
+    }
+
 }

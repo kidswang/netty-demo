@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8087
 management:
   endpoints:
     web:
@@ -8,3 +8,7 @@ management:
   endpoint:
     shutdown:
       enabled: true
+webSocket:
+  netty:
+    port: 8000
+    path: /ws
