@@ -25,7 +25,7 @@ public class DeadLockTest {
                 synchronized (lock2) {
                     ArrayBlockingQueue<String> strings = new ArrayBlockingQueue<>(10);
                     try {
-                        String take = strings.take();
+                        String take = strings.take(); // 阻塞队列
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
