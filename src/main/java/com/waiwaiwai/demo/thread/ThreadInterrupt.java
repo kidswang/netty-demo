@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: wangzhenglei
- * @DateTime: 2021/2/22 13:55
  * @Description: 测试中断线程
  */
 public class ThreadInterrupt {

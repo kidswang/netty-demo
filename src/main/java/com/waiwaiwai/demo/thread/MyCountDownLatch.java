@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 
 /**
  * @Author: wangzhenglei
- * @DateTime: 2021/2/26 14:12
  * @Description: 计数器
  */
 public class MyCountDownLatch {

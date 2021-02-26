@@ -6,7 +6,6 @@ import java.util.concurrent.*;
 
 /**
  * @Author: wangzhenglei
- * @DateTime: 2021/2/26 14:16
  * @Description: 可循环的实现线程同步的方式
  */
 public class MyCyclicBarrier {
